@@ -31,7 +31,7 @@ if(!isProduction) {
 }
 
 //Configure Mongoose
-mongoose.connect('mongodb://mongodb:27017/users', { useNewUrlParser: true  });
+mongoose.connect(process.env.DB, { useNewUrlParser: true  });
 mongoose.set('debug', true);
 
 //Require Users

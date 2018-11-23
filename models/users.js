@@ -40,12 +40,12 @@ UsersSchema.methods.generateJWT = function() {
 
 UsersSchema.methods.toJSON = function() {
   return {
-    _id: this._id,
+    id: this._id,
     email: this.email,
     username: this.username,
     first_name: this.first_name,
     last_name: this.last_name,
-    token: this.generateJWT(),
+    // token: this.generateJWT(),
   };
 };
 
