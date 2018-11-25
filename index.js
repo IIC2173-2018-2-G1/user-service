@@ -36,6 +36,7 @@ mongoose.set('debug', true);
 
 //Require Users
 require('./models/users');
+require('./models/subscriptions');
 require('./config/passport');
 app.use(require('./routes'));
 
