@@ -87,32 +87,34 @@ router.put("/current", (req, res, next) => {
 
 router.get("/current/subscriptions", (req, res, next) => {
   const user_id = req.header("X-User-ID");
-  Subscriptions.aggregate([
-    { $match: { user_id } },
-    {
-      $addFields: {
-        channel_obj_id: { $toObjectId: "$channel_id" }
+  mongoose.connection.db
+    .collection("subscriptions")
+    .aggregate([
+      { $match: { user_id } },
+      {
+        $addFields: {
+          channel_obj_id: { $toObjectId: "$channel_id" }
+        }
+      },
+      {
+        $lookup: {
+          from: "channels",
+          localField: "channel_obj_id",
+          foreignField: "_id",
+          as: "channel"
+        }
+      },
+      { $unwind: "$channel" },
+      { $replaceRoot: { newRoot: "$channel" } },
+      {
+        $project: {
+          _id: 0,
+          id: "$_id",
+          name: 1,
+          description: 1
+        }
       }
-    },
-    {
-      $lookup: {
-        from: "channels",
-        localField: "channel_obj_id",
-        foreignField: "_id",
-        as: "channel"
-      }
-    },
-    { $unwind: "$channel" },
-    { $replaceRoot: { newRoot: "$channel" } },
-    {
-      $project: {
-        _id: 0,
-        id: "$_id",
-        name: 1,
-        description: 1
-      }
-    }
-  ])
+    ])
     .toArray()
     .then(messages => res.json(messages))
     .catch(error => res.status(500).json({ error }));
