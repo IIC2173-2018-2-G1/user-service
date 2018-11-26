@@ -31,7 +31,7 @@ function auth_user(req, res, next) {
         const user = passportUser;
         const token = passportUser.generateJWT();
         res.cookie("_session", token);
-        return res.json(user.toJSON());
+        return res.json({...user.toJSON(), token});
       }
 
       return res.status(401).json({ error: info });
